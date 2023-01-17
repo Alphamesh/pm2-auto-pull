@@ -1,7 +1,9 @@
 var pmx = require("pmx");
-var pm2 = require("pm2");
-var async = require("async");
-var pkg = require("./package.json");
+const pm2 = require("pm2");
+const async = require("async");
+const pkg = require("./package.json");
+const child_process = require("child_process");
+const sd = require("silly-datetime");
 
 var Probe = pmx.probe();
 
@@ -18,17 +20,22 @@ function autoPull(cb) {
       1,
       function (proc, next) {
         if (proc.pm2_env && proc.pm2_env.versioning) {
-          pm2.pull(proc.name, function (err, meta) {
-            if (meta) {
-              app_updated.inc();
-              console.log(
-                ">>>>>>>>>>>>> Successfully pulled Application! [App name: %s]",
-                proc.name
-              );
+          let time = sd.format(new Date(), "YYYY-MM-DD HH:mm:ss");
+          child_process.exec(
+            "git pull",
+            { cwd: proc.pm2_env.versioning.repo_path },
+            function (error, stdout, stderr) {
+              if (error !== null) {
+                console.log("exec error: " + error);
+              } else {
+                console.log(time + " " + stdout);
+                console.log(
+                  ">>>>>>>>>>>>> Successfully pulled Application! [App name: %s]",
+                  proc.name
+                );
+              }
             }
-            if (err) console.log("App %s already at latest version", proc.name);
-            return next();
-          });
+          );
         } else next();
       },
       cb
