@@ -35,6 +35,7 @@ function autoPull(cb) {
                   proc.name
                 );
               }
+              return next();
             }
           );
         } else next();
