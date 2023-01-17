@@ -7,7 +7,7 @@ Synchronize all applications managed by PM2 + GIT automatically.
 ```
 # Install
 
-$ pm2 install pm2-auto-pull
+$ pm2 install Alphamesh/pm2-auto-pull
 
 ## Uninstall
 
