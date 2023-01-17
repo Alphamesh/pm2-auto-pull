@@ -25,6 +25,7 @@ function autoPull(cb) {
             "git pull",
             { cwd: proc.pm2_env.versioning.repo_path },
             function (error, stdout, stderr) {
+              app_updated.inc();
               if (error !== null) {
                 console.log("exec error: " + error);
               } else {
